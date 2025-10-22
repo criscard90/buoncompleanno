@@ -6,7 +6,7 @@
     <title>Buon compleanno</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         /* Sfondo con gradient */
         #background {
             position: fixed;
@@ -15,13 +15,13 @@
             background: radial-gradient(circle, rgba(255, 166, 0, 1) 0%, rgba(110, 0, 0, 1) 100%);
             z-index: -1;
         }
-
+        
         body {
             overflow: hidden;
             font-family: "Georgia", serif;
             color: #f5f0e6;
         }
-
+        
         .slideshow {
             position: fixed;
             top: 0; left: 0;
@@ -31,14 +31,14 @@
             transition: opacity 2s ease-in-out;
             filter: brightness(0.85);
         }
-
+        
         .overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.35);
         }
-
+        
         .text {
             position: absolute;
             bottom: 18%;
@@ -52,13 +52,13 @@
             opacity: 0;
             transition: opacity 2s ease-in-out;
         }
-
+        
         .accent {
             color: #cfa46a;
         }
-
+        
         audio { display: none; }
-
+        
         #startScreen {
             position: fixed;
             top: 0; left: 0;
@@ -71,7 +71,7 @@
             z-index: 10;
             transition: opacity 1s ease-in-out;
         }
-
+        
         #startButton {
             border: 2px solid #cfa46a;
             color: #cfa46a;
@@ -83,62 +83,96 @@
             cursor: pointer;
             transition: background 0.3s, color 0.3s;
         }
-
+        
         #startButton:hover {
             background: #cfa46a;
             color: #0f0f0f;
         }
-
+        
         @media (max-width: 768px) {
-            .text { font-size: 1.2rem; padding: 0 8%; }
+            .text { font-size: 2.6rem; padding: 0 8%; }
             #startButton { font-size: 1rem; padding: 0.7em 1.4em; }
         }
+        
+        #particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.8;
+    pointer-events: none;
+    animation-name: float;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+        
+@keyframes float {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) scale(0.5);
+        opacity: 0;
+    }
+}
+
+        
     </style>
 </head>
 <body>
-
+    
     <!-- Sfondo con gradient -->
     <div id="background"></div>
-
+    <div id="particles"></div>
+    
     <audio id="music" loop>
         <source src="musica.mp3" type="audio/mpeg">
     </audio>
-
+    
     <div id="startScreen">
         <h1 style="color:#f5f0e6; font-weight:400; margin-bottom:1.5em;">Tocca per iniziare 🎵</h1>
         <button id="startButton">Inizia</button>
     </div>
-
+    
     <div id="slides" class="slideshow"></div>
     <div class="overlay"></div>
     <div id="text" class="text"></div>
-
+    
     <script>
         const images = [
-            "foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg","foto5.jpg",
-            "foto6.jpg","foto7.jpg","foto8.jpg","foto9.jpg","foto10.jpg"
+        "foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg","foto5.jpg",
+        "foto6.jpg","foto7.jpg","foto8.jpg","foto9.jpg","foto10.jpg"
         ];
-
+        
         const texts = [
-            "Ci sono persone che passano nella nostra vita come comete: lasciano una scia di luce e poi spariscono.",
-            "Tu, invece, sei rimasta. Hai acceso quella luce dentro di me e non si è più spenta.",
-            "Ogni giorno con te è un piccolo miracolo fatto di sorrisi, di pazienza, di follia condivisa.",
-            "Sei la mia complice, la mia forza, la mia casa in qualunque posto del mondo.",
-            "Non serve aspettare un’occasione per dirti quanto ti amo, ma oggi voglio che tu lo senta ancora più forte:",
-            "sei la parte migliore della mia vita, il mio capolavoro più bello.",
-            "Buon compleanno, <span class='accent'>amore mio ❤️</span>"
+        "Ci sono persone che passano nella nostra vita come comete: lasciano una scia di luce e poi spariscono.",
+        "Tu, invece, sei rimasta. Hai acceso quella luce dentro di me e non si è più spenta.",
+        "Ogni giorno con te è un piccolo miracolo fatto di sorrisi, di pazienza, di follia condivisa.",
+        "Sei la mia complice, la mia forza, la mia casa in qualunque posto del mondo.",
+        "Non serve aspettare un’occasione per dirti quanto ti amo, ma oggi voglio che tu lo senta ancora più forte:",
+        "sei la parte migliore della mia vita, il mio capolavoro più bello.",
+        "Buon compleanno, <span class='accent'>amore mio ❤️</span>"
         ];
-
+        
         const slideEl = document.getElementById("slides");
         const textEl = document.getElementById("text");
         const music = document.getElementById("music");
         const startScreen = document.getElementById("startScreen");
         const startButton = document.getElementById("startButton");
-
+        
         let index = 0;
         let textIndex = 0;
         let started = false;
-
+        
         function showSlide() {
             slideEl.style.opacity = 0;
             setTimeout(() => {
@@ -146,7 +180,7 @@
                 slideEl.style.opacity = 1;
             }, 2000);
         }
-
+        
         function showText() {
             textEl.style.opacity = 0;
             setTimeout(() => {
@@ -156,7 +190,7 @@
                 }
             }, 2000);
         }
-
+        
         function nextSlide() {
             index = (index + 1) % images.length;
             if (index % Math.floor(images.length / texts.length) === 0 && textIndex < texts.length - 1) {
@@ -165,20 +199,57 @@
             showSlide();
             showText();
         }
-
+        
         function startPresentation() {
             if (started) return;
             started = true;
+            music.currentTime = 27;
             music.play().catch(()=>{});
             startScreen.style.opacity = 0;
             setTimeout(() => startScreen.style.display = "none", 1000);
             showSlide();
             showText();
-            setInterval(nextSlide, 6000);
+            setInterval(nextSlide, 10000);
         }
-
+        
         startButton.addEventListener("click", startPresentation);
-    </script>
+        
+function createParticle() {
+    const particle = document.createElement("div");
+    particle.classList.add("particle");
 
+    // Dimensione casuale tra 6px e 20px
+    const size = 6 + Math.random() * 14;
+    particle.style.width = size + "px";
+    particle.style.height = size + "px";
+
+    // Posizione casuale
+    particle.style.left = Math.random() * window.innerWidth + "px";
+    particle.style.top = window.innerHeight + "px";
+
+    // Colore casuale
+    const colors = ["#fff", "#cfa46a", "#f5f0e6", "#ff9900"];
+    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    // Durata casuale tra 2 e 6 secondi
+    const duration = 2 + Math.random() * 4;
+    particle.style.animationDuration = duration + "s";
+
+    document.getElementById("particles").appendChild(particle);
+
+    // Rimuovi dopo l’animazione
+    setTimeout(() => particle.remove(), duration * 1000);
+}
+
+        
+        // Avvia particelle random ogni 1–3 secondi
+        setInterval(() => {
+            if (started && Math.random() < 0.9) {
+                createParticle();
+            }
+        }, 300);
+        
+    </script>
+    
 </body>
 </html>
