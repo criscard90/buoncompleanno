@@ -90,7 +90,7 @@
         }
         
         @media (max-width: 768px) {
-            .text { font-size: 1.8rem; padding: 0 8%; }
+            .text { font-size: 1.8rem; padding: 0 8%;}
             #startButton { font-size: 1rem; padding: 0.7em 1.4em; }
         }
         
@@ -102,29 +102,41 @@
             z-index: 1;
         }
         
-.particle {
-    position: absolute;
-    border-radius: 50%;
-    background: #fff;
-    opacity: 0.8;
-    pointer-events: none;
-    animation-name: float;
-    animation-timing-function: linear;
-    animation-fill-mode: forwards;
-}
-
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: #fff;
+            opacity: 0.8;
+            pointer-events: none;
+            animation-name: float;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+        }
         
-@keyframes float {
-    0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100vh) scale(0.5);
-        opacity: 0;
-    }
-}
-
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(0.5);
+                opacity: 0;
+            }
+        }
+        
+        #endFade {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: black;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+            transition: opacity 4s ease-in-out;
+        }
+        
+        
         
     </style>
 </head>
@@ -133,6 +145,8 @@
     <!-- Sfondo con gradient -->
     <div id="background"></div>
     <div id="particles"></div>
+    <div id="endFade"></div>
+    
     
     <audio id="music" loop>
         <source src="musica.mp3" type="audio/mpeg">
@@ -154,9 +168,12 @@
         ];
         
         const texts = [
-        "Ci sono persone che passano nella nostra vita come comete: lasciano una scia di luce e poi spariscono.",
-        "Tu, invece, sei rimasta. Hai acceso quella luce dentro di me e non si è più spenta.",
-        "Ogni giorno con te è un piccolo miracolo fatto di sorrisi, di pazienza, di follia condivisa.",
+        "Ci sono persone che passano nella nostra vita come comete:",
+        "lasciano una scia di luce e poi spariscono.",
+        "Tu, invece, sei rimasta. Hai acceso quella luce dentro di me",
+        "e non si è più spenta.",
+        "Ogni giorno con te è un piccolo miracolo",
+        "fatto di sorrisi, di pazienza, di follia condivisa.",
         "Sei la mia complice, la mia forza, la mia casa in qualunque posto del mondo.",
         "Non serve aspettare un’occasione per dirti quanto ti amo, ma oggi voglio che tu lo senta ancora più forte:",
         "sei la parte migliore della mia vita, il mio capolavoro più bello.",
@@ -191,56 +208,89 @@
             }, 2000);
         }
         
+        let slideCount = 0;
+        const totalSlides = images.length;
+        
         function nextSlide() {
+            slideCount++;
+            
             index = (index + 1) % images.length;
+            
             if (index % Math.floor(images.length / texts.length) === 0 && textIndex < texts.length - 1) {
                 textIndex++;
             }
+            
             showSlide();
             showText();
+            
+            // Quando tutte le immagini sono state mostrate una volta
+            if (slideCount === totalSlides) {
+                clearInterval(slideInterval); // ferma il ciclo
+                fadeOutMusic();
+                document.getElementById("endFade").style.opacity = 1;
+            }
         }
+        
+        let slideInterval;
         
         function startPresentation() {
             if (started) return;
             started = true;
-            music.currentTime = 27;
+            
+            music.currentTime = 27; // o un punto specifico
             music.play().catch(()=>{});
             startScreen.style.opacity = 0;
             setTimeout(() => startScreen.style.display = "none", 1000);
             showSlide();
             showText();
-            setInterval(nextSlide, 10000);
+            slideInterval = setInterval(nextSlide, 8000);
         }
+        
         
         startButton.addEventListener("click", startPresentation);
         
-function createParticle() {
-    const particle = document.createElement("div");
-    particle.classList.add("particle");
-
-    // Dimensione casuale tra 6px e 20px
-    const size = 6 + Math.random() * 14;
-    particle.style.width = size + "px";
-    particle.style.height = size + "px";
-
-    // Posizione casuale
-    particle.style.left = Math.random() * window.innerWidth + "px";
-    particle.style.top = window.innerHeight + "px";
-
-    // Colore casuale
-    const colors = ["#fff", "#cfa46a", "#f5f0e6", "#ff9900"];
-    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-
-    // Durata casuale tra 2 e 6 secondi
-    const duration = 2 + Math.random() * 4;
-    particle.style.animationDuration = duration + "s";
-
-    document.getElementById("particles").appendChild(particle);
-
-    // Rimuovi dopo l’animazione
-    setTimeout(() => particle.remove(), duration * 1000);
-}
-
+        function createParticle() {
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+            
+            // Dimensione casuale tra 6px e 20px
+            const size = 6 + Math.random() * 14;
+            particle.style.width = size + "px";
+            particle.style.height = size + "px";
+            
+            // Posizione casuale
+            particle.style.left = Math.random() * window.innerWidth + "px";
+            particle.style.top = window.innerHeight + "px";
+            
+            // Colore casuale
+            const colors = ["#fff", "#cfa46a", "#f5f0e6", "#ff9900"];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Durata casuale tra 2 e 6 secondi
+            const duration = 2 + Math.random() * 4;
+            particle.style.animationDuration = duration + "s";
+            
+            document.getElementById("particles").appendChild(particle);
+            
+            // Rimuovi dopo l’animazione
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+        
+        function fadeOutMusic(duration = 4000) {
+            const steps = 30;
+            const stepTime = duration / steps;
+            let currentStep = 0;
+            
+            const fade = setInterval(() => {
+                currentStep++;
+                music.volume = Math.max(0, 1 - currentStep / steps);
+                if (currentStep >= steps) {
+                    clearInterval(fade);
+                    music.pause();
+                    music.currentTime = 0; // opzionale: resetta la traccia
+                }
+            }, stepTime);
+        }
         
         // Avvia particelle random ogni 1–3 secondi
         setInterval(() => {
@@ -253,4 +303,3 @@ function createParticle() {
     
 </body>
 </html>
-
