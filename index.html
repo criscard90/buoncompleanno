@@ -281,7 +281,7 @@
         // ==========================================================
         
         let isBoosted = false; // Stato attuale del boost
-        const boostDuration = 5000; // Durata del boost in ms (5 secondi)
+        const boostDuration = 3000; // Durata del boost in ms (5 secondi)
         
         // TEMPI DI INIZIO DEL RITORNELLO (in secondi dalla partenza della musica)
         // ** MODIFICA QUESTI VALORI PER SINCRONIZZARE CON LA TUA MUSICA **
@@ -393,8 +393,8 @@
             particle.classList.add("particle");
             
             // Dimensione: 6-20px normale, 12-30px potenziata
-            const minSize = boosted ? 12 : 6;
-            const maxSize = boosted ? 30 : 20;
+            const minSize = boosted ? 18 : 6;
+            const maxSize = boosted ? 50 : 20;
             const size = minSize + Math.random() * (maxSize - minSize);
             particle.style.width = size + "px";
             particle.style.height = size + "px";
@@ -409,7 +409,7 @@
             
             // Durata: 2-6 secondi normale, 1-3 secondi potenziata (per maggiore velocità)
             const minDuration = boosted ? 1 : 2;
-            const maxDuration = boosted ? 3 : 6;
+            const maxDuration = boosted ? 2 : 6;
             const duration = minDuration + Math.random() * (maxDuration - minDuration);
             particle.style.animationDuration = duration + "s";
             
